@@ -1,0 +1,328 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Postaway API",
+    "description": "API for Socialmedia platform",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3200"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "JWT": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    }
+  },
+  "paths": {
+    "/api/signup": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Signup",
+        "description": "New user - Signup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Signup Successful" },
+          "400": { "description": "Invalid Request" }
+        }
+      }
+    },
+    "/api/signin": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Login",
+        "description": "User Login to get token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Invalid User" }
+        }
+      }
+    },
+    "/api/posts": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get Posts of this user",
+        "description": "User will get all posts",
+        "security": [{ "JWT": {} }],
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Unauthorized" }
+        }
+      },
+      "post": {
+        "tags": ["Posts"],
+        "summary": "Create a new post",
+        "description": "User can create a new post with an image and caption",
+        "security": [{ "JWT": {} }],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "caption": { "type": "string" },
+                  "imageUrl": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Post Created Successfully" },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/api/posts/all": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get all posts",
+        "description": "Retrieve all posts",
+        "security": [{ "JWT": {} }],
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "Error fetching posts" }
+        }
+      }
+    },
+    "/api/posts/{id}": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get post by ID",
+        "description": "Retrieve a single post by its ID",
+        "security": [{ "JWT": {} }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Post Retrieved Successfully" },
+          "404": { "description": "Post Not Found" }
+        }
+      },
+      "put": {
+        "tags": ["Posts"],
+        "summary": "Update a post",
+        "description": "Update a post caption or image",
+        "security": [{ "JWT": {} }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "caption": { "type": "string" },
+                  "imageUrl": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Post Updated Successfully" },
+          "400": { "description": "Invalid Request" }
+        }
+      },
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "Delete a post",
+        "description": "Delete a post by ID",
+        "security": [{ "JWT": {} }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Post Deleted Successfully" },
+          "404": { "description": "Post Not Found" }
+        }
+      }
+    },
+    "/api/likes/{postId}": {
+      "get": {
+        "tags": ["Likes"],
+        "summary": "Get all likes for a post",
+        "description": "Retrieve all likes for a specific post",
+        "security": [{ "JWT": {} }],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Likes Retrieved Successfully" },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/api/likes/toggle/{postId}": {
+      "get": {
+        "tags": ["Likes"],
+        "summary": "Toggle like on a post",
+        "description": "Toggle the like status for a post by the current user",
+        "security": [{ "JWT": {} }],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Like Added or Removed Successfully" },
+          "400": { "description": "Bad Request" }
+        }
+      }
+    },
+    "/api/comments/{id}": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Get all Comments for a post",
+        "description": "Retrieve all Comments for a specific post",
+        "security": [{ "JWT": {} }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Comments Retrieved Successfully" },
+          "400": { "description": "Bad Request" }
+        }
+      },
+      "post": {
+        "tags": ["Comments"],
+        "summary": "Create a Comment",
+        "description": "User can create a new Comment",
+        "security": [{ "JWT": {} }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "commentContent": { "type": "string" }
+                },
+                "required": ["commentContent"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Comment Created" },
+          "400": { "description": "Bad Request" }
+        }
+      },
+
+      "put": {
+        "tags": ["Comments"],
+        "summary": "Update a Comment",
+        "description": "Update a Comment content",
+        "security": [{ "JWT": {} }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "commentContent": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Comment Updated Successfully" },
+          "400": { "description": "Invalid Request" }
+        }
+      },
+      "delete": {
+        "tags": ["Comments"],
+        "summary": "Delete a Comment",
+        "description": "Delete a Comment by ID",
+        "security": [{ "JWT": {} }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Comment Deleted Successfully" },
+          "404": { "description": "Post Not Found" }
+        }
+      }
+    }
+  }
+}
