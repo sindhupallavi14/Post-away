@@ -22,14 +22,14 @@ The backend API for this application is built using **Node.js** and **Express**,
 
 ## API Documentation
 To explore and test the API, visit  Swagger Docs:
-1.**Clone the Repository**  
+- **Clone the Repository**
 git clone https://github.com/sindhupallavi14/postaway.git
 cd postaway
-2.**Install dependencies** 
+- **Install dependencies** 
 npm install
-3.**Start the server** 
+- **Start the server** 
 The server will start on http://localhost:3200
-4.**Access API Documentation**
+- **Access API Documentation**
 http://localhost:3200/api-docs 
 This will open Swagger API documentation, where you can test all endpoints.
 
